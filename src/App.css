@@ -1,0 +1,101 @@
+/* Reset & Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Tambahkan ini agar padding tidak merusak lebar */
+}
+
+body {
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #050505;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Container Utama */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #050505;
+  padding: 24px;
+  gap: 24px;
+  /* Jangan gunakan overflow: hidden di sini agar mobile bisa scroll */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  height: calc(100vh - 48px);
+  position: sticky;
+  top: 24px;
+  z-index: 100;
+}
+
+/* Area Konten */
+.main-viewport {
+  flex: 1;
+  height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding-right: 10px;
+  scrollbar-width: thin; /* Untuk Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+/* Scrollbar Chrome/Safari */
+.main-viewport::-webkit-scrollbar {
+  width: 5px;
+}
+.main-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+.main-viewport::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+/* --- RESPONSIVE BREAKPOINT (MOBILE & TABLET) --- */
+
+@media (max-width: 1024px) {
+  .app-layout {
+    flex-direction: column; /* Sidebar jadi di atas, konten di bawah */
+    padding: 16px;
+    gap: 16px;
+    overflow-y: auto; /* Izinkan scroll seluruh halaman di mobile */
+  }
+
+  .sidebar {
+    width: 100%; /* Lebar penuh di HP */
+    height: auto; /* Tinggi mengikuti isi */
+    position: relative; /* Tidak lagi melayang di samping */
+    top: 0;
+  }
+
+  .main-viewport {
+    width: 100%;
+    height: auto; /* Biar tinggi konten sesuai isinya */
+    overflow-y: visible; /* Scroll pakai scrollbody utama */
+    padding-right: 0;
+  }
+}
+
+/* Animasi */
+.modern-container,
+.about-container,
+.achievements-container,
+.progress-container {
+  animation: fadeInRight 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* Ganti ke Y agar lebih natural di mobile */
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}

@@ -1,0 +1,235 @@
+.about-container {
+  margin-top: 80px;
+  animation: fadeIn 1s ease-out;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.section-header .prefix {
+  color: #5eb562; /* Hijau aksen */
+  font-family: "JetBrains Mono", monospace;
+  font-weight: bold;
+}
+
+.section-header h2 {
+  font-size: 1.8rem;
+  white-space: nowrap;
+}
+
+.section-header .line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* BENTO LAYOUT UNTUK ABOUT */
+.about-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(180px, auto);
+  gap: 20px;
+}
+
+.about-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 28px;
+  padding: 30px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.about-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.02);
+  background: rgba(30, 30, 30, 0.7);
+}
+
+/* Story Card (Besar di Kiri) */
+.story-card {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.story-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.story-card p {
+  line-height: 1.8;
+  color: #999;
+  font-size: 1.1rem;
+}
+
+.text-bright {
+  color: #fff;
+  font-weight: 600;
+}
+
+.card-tags {
+  margin-top: 30px;
+  display: flex;
+  gap: 10px;
+}
+
+.card-tags span {
+  font-size: 0.75rem;
+  color: #5eb562;
+  background: rgba(94, 181, 98, 0.1);
+  padding: 5px 12px;
+  border-radius: 50px;
+}
+
+/* Container Jam Digital */
+.clock-card {
+  background: #0a0a0a; /* Hitam pekat sesuai tema */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+}
+
+.clock-wrapper {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clock-label {
+  font-size: 0.65rem;
+  color: #555;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.digital-time {
+  font-family: "JetBrains Mono", monospace; /* Gunakan font mono agar angka tidak goyang */
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.clock-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.clock-date {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* Indikator Live Berdenyut */
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #fff;
+  background: #1a1a1a;
+  padding: 2px 8px;
+  border-radius: 50px;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: #ff4b4b; /* Merah Live */
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 75, 75, 0.5);
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsif Mobile */
+@media (max-width: 768px) {
+  .digital-time {
+    font-size: 2.2rem;
+  }
+}
+/* Interest Card */
+.interest-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+.interest-list {
+  list-style: none;
+  padding: 0;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.interest-list li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+/* Quote Card */
+.quote-card {
+  background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.quote-icon {
+  font-size: 4rem;
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  opacity: 0.1;
+  font-family: serif;
+}
+
+.quote-card p {
+  font-style: italic;
+  color: #ccc;
+  font-size: 1rem;
+}
+
+.quote-author {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .about-bento-grid {
+    grid-template-columns: 1fr;
+  }
+  .story-card {
+    grid-column: span 1;
+  }
+}

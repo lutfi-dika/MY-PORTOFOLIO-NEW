@@ -1,0 +1,145 @@
+.achieve-container {
+  padding: 20px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.achieve-header {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.title-dot {
+  color: #5eb562;
+}
+
+.achieve-header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Grid Layout */
+.achieve-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+/* Card Styling */
+.achieve-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.achieve-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Image Section */
+.image-wrapper {
+  position: relative;
+  height: 200px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  filter: saturate(0.8);
+}
+
+.achieve-card:hover .image-wrapper img {
+  transform: scale(1.1);
+  filter: saturate(1.2);
+}
+
+.badge-overlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Info Section */
+.card-info {
+  padding: 24px;
+}
+
+.provider-name {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-info h3 {
+  color: #fff;
+  margin: 10px 0 20px 0;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 15px;
+}
+
+.btn-detail {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: 0.3s;
+}
+
+.achieve-card:hover .btn-detail {
+  color: #fff;
+}
+
+.arrow {
+  color: #444;
+  transition: 0.3s;
+}
+
+.achieve-card:hover .arrow {
+  transform: translate(3px, -3px);
+  color: var(--accent);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

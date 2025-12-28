@@ -1,0 +1,120 @@
+/* Sidebar.css */
+
+.sidebar {
+  width: 280px;
+  height: calc(100vh - 48px);
+  border-radius: 30px;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Dorong footer ke bawah */
+  position: sticky;
+  top: 24px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-img img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #5eb562;
+  margin-bottom: 10px;
+}
+
+.nav-menu {
+  flex-grow: 1; /* Mengambil sisa ruang agar footer terdorong */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  color: #888;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: 0.3s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: #1e1e1e;
+  border: 1px solid rgba(94, 181, 98, 0.3);
+}
+
+
+.sidebar-footer {
+  color: #444;
+  font-size: 0.7rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 15px;
+}
+
+/* --- RESPONSIVE MOBILE (Breakpoint 768px) --- */
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 0;
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  .profile-section {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    gap: 15px;
+  }
+
+  .profile-img img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0;
+  }
+
+  .nav-menu {
+    flex-direction: row; /* Menu berjejer ke samping di HP */
+    overflow-x: auto; /* Bisa di-slide jika menu banyak */
+    padding-bottom: 10px;
+    margin-top: 15px;
+    gap: 10px;
+    scrollbar-width: none; /* Sembunyikan scrollbar Firefox */
+  }
+
+  .nav-menu::-webkit-scrollbar {
+    display: none; /* Sembunyikan scrollbar Chrome */
+  }
+
+  .nav-item {
+    flex-shrink: 0; /* Jangan biarkan menu gepeng */
+    padding: 10px 15px;
+    font-size: 0.85rem;
+  }
+
+  .smart-talk-btn {
+    display: none; /* Sembunyikan tombol di mobile agar ringkas */
+  }
+
+  .sidebar-footer {
+    display: none; /* Sembunyikan footer di mobile */
+  }
+}

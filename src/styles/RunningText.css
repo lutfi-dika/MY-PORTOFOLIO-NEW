@@ -1,0 +1,65 @@
+.marquee-container {
+  width: 100%;
+  background: #000; /* Hitam pekat */
+  border-top: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 20px 0;
+  overflow: hidden; /* Sembunyikan teks yang keluar layar */
+  display: flex;
+  position: relative;
+}
+
+.marquee-content {
+  display: flex;
+  white-space: nowrap;
+  animation: scroll 20s linear infinite; /* Kecepatan bisa diatur di sini */
+}
+
+.marquee-item {
+  display: flex;
+  align-items: center;
+  font-family: "Inter", sans-serif;
+  font-weight: 900;
+  font-size: 2.5rem; /* Ukuran teks besar yang modern */
+  color: rgba(255, 255, 255, 0.1); /* Teks semi-transparan elegan */
+  padding: 0 40px;
+  letter-spacing: 4px;
+  transition: 0.3s;
+  cursor: default;
+}
+
+.marquee-item:hover {
+  color: #ffffff; /* Saat di-hover teks menyala putih murni */
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.dot {
+  color: #333;
+  margin-right: 40px;
+  font-size: 1.5rem;
+}
+
+/* --- ANIMASI KEYFRAMES --- */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(
+      -50%
+    ); /* Geser setengah karena kita menduplikasi konten */
+  }
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+  .marquee-item {
+    font-size: 1.2rem; /* Ukuran lebih kecil di HP agar tidak meluber */
+    padding: 0 20px;
+    letter-spacing: 2px;
+  }
+
+  .marquee-container {
+    padding: 12px 0;
+  }
+}
