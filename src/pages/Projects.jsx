@@ -50,7 +50,7 @@ const Projects = () => {
     return (
         <section className="projects-container">
             <div className="section-header">
-                <span className="prefix">03.</span>
+                <span className="prefix">04.</span>
                 <h2>Featured Projects <span className="title-dot">.</span></h2>
                 <div className="line"></div>
             </div>

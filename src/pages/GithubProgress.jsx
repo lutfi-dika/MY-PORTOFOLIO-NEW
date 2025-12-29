@@ -29,7 +29,7 @@ const GithubProgress = () => {
     return (
         <div className="progress-container">
             <div className="section-header">
-                <span className="prefix">04.</span>
+                <span className="prefix">03.</span>
                 <h2>Github Progress</h2>
                 <div className="line"></div>
             </div>

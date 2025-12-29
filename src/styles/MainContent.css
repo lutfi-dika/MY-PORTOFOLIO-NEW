@@ -84,13 +84,14 @@
 /* Skills Section */
 .section-title {
   font-family: "JetBrains Mono", monospace;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: oklch(49.709% 0.0959 286.868);
   margin-bottom: 30px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 
 .skill-category h4 {
   font-size: 1.1rem;

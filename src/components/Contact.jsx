@@ -5,7 +5,7 @@ const ContactForm = () => {
     return (
         <section className="contact-container">
             <div className="section-header">
-                <span className="prefix">04.</span>
+                <span className="prefix">06.</span>
                 <h2>Get In Touch <span className="title-dot">.</span></h2>
                 <div className="line"></div>
             </div>
@@ -26,6 +26,18 @@ const ContactForm = () => {
                 {/* Card Kanan: Form (Sudah React Version) */}
                 <div className="contact-card form-card">
                     <form action="https://formspree.io/f/xzdbvrqw" method="POST" className="modern-form">
+                        <div className="form-group">
+                            <label htmlFor="email">Username</label>
+                            <input
+                                type="Username"
+                                name="Username"
+                                id="Username"
+                                placeholder="Username"
+                                required
+                            />
+                        </div>
+
+
                         <div className="form-group">
                             <label htmlFor="email">Your Email</label>
                             <input
