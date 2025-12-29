@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/Projects.css';
+import LikeButton from '../components/LikeButton';
 
 const Projects = () => {
     const projectData = [
@@ -56,33 +57,41 @@ const Projects = () => {
             </div>
 
             <div className="projects-grid">
-                {projectData.map((project) => (
-                    <div key={project.id} className="project-card">
-                        <div className="project-image-wrapper">
-                            {/* Menggunakan API Microlink untuk screenshot otomatis */}
-                            <img
-                                src={`https://api.microlink.io/?url=${encodeURIComponent(project.url)}&screenshot=true&embed=screenshot.url`}
-                                alt={project.title}
-                                loading="lazy"
-                            />
-                            <div className="project-overlay">
-                                <div className="project-tags">
-                                    {project.tags.map((tag, idx) => (
-                                        <span key={idx} className="tag">{tag}</span>
-                                    ))}
+                {projectData.map((project) => {
+                    // Membuat ID unik untuk Firebase berdasarkan judul (tanpa spasi)
+                    const firestoreId = project.title.replace(/\s+/g, '_').toLowerCase();
+
+                    return (
+                        <div key={project.id} className="project-card">
+                            <div className="project-image-wrapper">
+                                <img
+                                    src={`https://api.microlink.io/?url=${encodeURIComponent(project.url)}&screenshot=true&embed=screenshot.url`}
+                                    alt={project.title}
+                                    loading="lazy"
+                                />
+                                <div className="project-overlay">
+                                    <div className="project-tags">
+                                        {project.tags.map((tag, idx) => (
+                                            <span key={idx} className="tag">{tag}</span>
+                                        ))}
+                                    </div>
+                                    <a href={project.url} target="_blank" rel="noreferrer" className="view-btn">
+                                        Visit Website ↗
+                                    </a>
                                 </div>
-                                <a href={project.url} target="_blank" rel="noreferrer" className="view-btn">
-                                    Visit Website ↗
-                                </a>
+                            </div>
+
+                            <div className="project-details">
+                                <div className="details-top">
+                                    <span className="project-category">{project.category}</span>
+                                    {/* Menaruh LikeButton di sebelah kanan judul/kategori */}
+                                    <LikeButton projectId={firestoreId} />
+                                </div>
+                                <h3 className="project-title">{project.title}</h3>
                             </div>
                         </div>
-
-                        <div className="project-details">
-                            <span className="project-category">{project.category}</span>
-                            <h3 className="project-title">{project.title}</h3>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </section>
     );

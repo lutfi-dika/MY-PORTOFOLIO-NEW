@@ -10,7 +10,10 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         { id: 'Progres', label: 'Progres', icon: '📈' },
         { id: 'Projects', label: 'Projects', icon: '📁' },
         { id: 'Chat', label: 'Chat', icon: '�' },
-        { id: 'Contact', label: 'Contact', icon:'📱'}
+        { id: 'Contact', label: 'Contact', icon:'📱'},
+
+
+
     ];
 
     return (

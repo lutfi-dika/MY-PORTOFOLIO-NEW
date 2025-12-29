@@ -1,33 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, onValue, query, limitToLast } from "firebase/database";
+// Import 'db' dari App.js agar tidak error "duplicate-app"
+import { db } from '../App';
+import { ref, push, onValue, query, limitToLast } from "firebase/database";
 import '../styles/PublicChat.css';
-
-// GUNAKAN CONFIG DARI GAMBAR YANG KAMU KIRIM
-const firebaseConfig = {
-    apiKey: "AIzaSyAbHp2Ty7cn5J8H4Y2pAShqrJS8yE-wdnk",
-    authDomain: "portfolio-chat-42c66.firebaseapp.com",
-    // PERBAIKAN DI SINI:
-    databaseURL: "https://portfolio-chat-42c66-default-rtdb.asia-southeast1.firebasedatabase.app", 
-    projectId: "portfolio-chat-42c66",
-    storageBucket: "portfolio-chat-42c66.firebasestorage.app",
-    messagingSenderId: "755025564214",
-    appId: "1:755025564214:web:17fccad18cbbda5fffbe97",
-    measurementId: "G-0GYSPF2X3X"
-};
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 
 const PublicChat = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
-    const [myId] = useState(`User-${Math.floor(Math.random() * 999)}`);
+    // Menggunakan localStorage agar ID user tetap sama saat refresh
+    const [myId] = useState(() => {
+        const savedId = localStorage.getItem('chat_user_id');
+        if (savedId) return savedId;
+        const newId = `User-${Math.floor(Math.random() * 999)}`;
+        localStorage.setItem('chat_user_id', newId);
+        return newId;
+    });
+
     const chatEndRef = useRef(null);
 
     useEffect(() => {
-        // Mendengarkan data di folder 'chats'
+        // Mendengarkan data di folder 'chats' pada database yang sama dengan App.js
         const chatRef = query(ref(db, 'chats'), limitToLast(50));
+
         const unsubscribe = onValue(chatRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -36,8 +30,11 @@ const PublicChat = () => {
                     ...data[key]
                 }));
                 setMessages(msgArray);
+            } else {
+                setMessages([]);
             }
         });
+
         return () => unsubscribe();
     }, []);
 
@@ -49,32 +46,45 @@ const PublicChat = () => {
         e.preventDefault();
         if (!input.trim()) return;
 
-        await push(ref(db, 'chats'), {
-            sender: myId,
-            text: input,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        });
-        setInput('');
+        try {
+            await push(ref(db, 'chats'), {
+                sender: myId,
+                text: input,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now() // Tambahkan timestamp untuk pengurutan
+            });
+            setInput('');
+        } catch (error) {
+            console.error("Gagal mengirim pesan:", error);
+        }
     };
 
     return (
         <div className="chat-container">
             <div className="chat-header">
                 <h3>💬 Global Talk</h3>
-                <div className="online-tag">Realtime</div>
+                <div className="online-tag">Live Chat</div>
             </div>
             <div className="chat-window">
-                {messages.map((m) => (
-                    <div key={m.id} className={`chat-bubble ${m.sender === myId ? 'sent' : 'received'}`}>
-                        <span className="chat-author">{m.sender === myId ? 'You' : m.sender}</span>
-                        <p>{m.text}</p>
-                        <span className="chat-time">{m.time}</span>
-                    </div>
-                ))}
+                {messages.length === 0 ? (
+                    <p className="no-chat">Belum ada pesan. Mulai obrolan!</p>
+                ) : (
+                    messages.map((m) => (
+                        <div key={m.id} className={`chat-bubble ${m.sender === myId ? 'sent' : 'received'}`}>
+                            <span className="chat-author">{m.sender === myId ? 'You' : m.sender}</span>
+                            <p>{m.text}</p>
+                            <span className="chat-time">{m.time}</span>
+                        </div>
+                    ))
+                )}
                 <div ref={chatEndRef} />
             </div>
             <form className="chat-input-area" onSubmit={sendChat}>
-                <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Tulis pesan..." />
+                <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Tulis pesan..."
+                />
                 <button type="submit" className="chat-send-btn">✈</button>
             </form>
         </div>

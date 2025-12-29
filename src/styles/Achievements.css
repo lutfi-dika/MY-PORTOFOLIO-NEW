@@ -133,6 +133,25 @@
   color: var(--accent);
 }
 
+.info-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+/* Ukuran kecil khusus untuk di dalam card sertifikat */
+.achieve-card .like-button {
+    padding: 2px 8px !important;
+    font-size: 11px !important;
+    border-radius: 8px !important;
+    transform: scale(0.9);
+}
+
+.achieve-card .like-button:hover {
+    transform: scale(0.95);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

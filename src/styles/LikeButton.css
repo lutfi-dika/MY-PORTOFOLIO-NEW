@@ -1,0 +1,33 @@
+.like-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 2px solid #ff4757;
+  background: white;
+  color: #ff4757;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.like-button:hover {
+  background: #fff1f2;
+  transform: scale(1.05);
+}
+
+.like-button.active {
+  background: #ff4757;
+  color: white;
+}
+
+.heart-icon {
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.like-button:active .heart-icon {
+  transform: scale(1.4);
+}

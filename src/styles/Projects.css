@@ -95,6 +95,25 @@
   font-size: 1.1rem;
 }
 
+.project-details {
+  padding: 1.5rem;
+  position: relative;
+}
+
+.details-top {
+  display: flex;
+  justify-content: space-between; /* Menjauhkan kategori dan tombol like */
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Penyesuaian ukuran Like Button agar pas di dalam kartu */
+.like-button {
+  padding: 4px 10px !important;
+  font-size: 12px !important;
+  border-radius: 12px !important;
+}
+
 /* Responsif Mobile */
 @media (max-width: 768px) {
   .projects-grid {
