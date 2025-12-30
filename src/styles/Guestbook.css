@@ -1,0 +1,231 @@
+/* Container Utama */
+.gb-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  font-family: "Inter", sans-serif;
+}
+
+.gb-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 5px;
+}
+
+.gb-subtitle {
+  color: #777;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+/* --- STYLES FORM --- */
+.gb-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+/* Banner Mode Balas (Muncul saat klik Balas) */
+.gb-reply-banner {
+  background: #e7f3ff;
+  padding: 12px 15px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #007bff;
+  border: 1px dashed #007bff;
+  animation: slideDown 0.3s ease-out;
+}
+
+.gb-reply-banner span b {
+  color: #0056b3;
+}
+
+.gb-reply-banner button {
+  background: #ff4d4d;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.gb-reply-banner button:hover {
+  background: #cc0000;
+}
+
+.gb-input,
+.gb-textarea {
+  border: 2px solid #f0f0f0;
+  padding: 14px;
+  border-radius: 12px;
+  transition: 0.3s;
+  outline: none;
+  font-size: 14px;
+}
+
+.gb-input:focus,
+.gb-textarea:focus {
+  border-color: #007bff;
+  background: #fcfdff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+}
+
+.gb-textarea {
+  height: 120px;
+  resize: none;
+}
+
+.gb-button {
+  background: #1a1a1a;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 15px;
+}
+
+.gb-button:hover {
+  background: #007bff;
+  transform: translateY(-2px);
+}
+
+.gb-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- STYLES KARTU PESAN --- */
+.gb-card {
+  padding: 20px;
+  background: #fdfdfd;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #f0f0f0;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+/* Label Info Balasan di dalam Kartu */
+.gb-reply-label {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 10px;
+  font-style: italic;
+  background: #f1f1f1;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* Style Khusus Kartu Admin (Andika) */
+.admin-card {
+  background: #fffef0; /* Warna krem kuning khas admin */
+  border: 1px solid #ffeaa7;
+  border-left: 5px solid #fdcb6e; /* Border samping emas */
+  margin-left: 20px; /* Efek menjorok agar terlihat seperti respon */
+}
+
+/* Badge Owner */
+.admin-badge {
+  background: #fdcb6e;
+  color: #000;
+  font-size: 10px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  margin-left: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gb-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.gb-name {
+  font-weight: 700;
+  color: #2d3436;
+  font-size: 15px;
+}
+
+.gb-date {
+  font-size: 11px;
+  color: #b2bec3;
+}
+
+.gb-message {
+  line-height: 1.6;
+  color: #4b4b4b;
+  margin: 0;
+  font-size: 14px;
+  white-space: pre-wrap; /* Agar baris baru/enter terbaca */
+}
+
+/* --- TOMBOL AKSI (BALAS & HAPUS) --- */
+.gb-card-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+}
+
+.gb-action-link {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #a0a0a0;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 600;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gb-action-link:hover {
+  color: #007bff;
+}
+
+.gb-action-link.delete:hover {
+  color: #d63031;
+}
+
+/* Status Pesan Kosong */
+.gb-empty {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+  margin-top: 20px;
+}
+
+/* Animasi */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

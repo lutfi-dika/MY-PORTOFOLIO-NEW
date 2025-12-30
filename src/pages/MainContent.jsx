@@ -1,6 +1,7 @@
 import React from 'react';
 import RunningText from '../components/RunningText';
 import VisitorMap from '../components/VisitorMap'
+import Guestbook from '../components/Guestbook';
 import '../styles/MainContent.css';
 
 const MainContent = () => {
@@ -99,6 +100,7 @@ const MainContent = () => {
                 ))}
             </section>
             <VisitorMap />
+            {/* <Guestbook /> */}
         </div>
     );
 };

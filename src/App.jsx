@@ -8,6 +8,9 @@ import Projects from './pages/Projects';
 import Chat from './components/PublicChat';
 import Contact from './components/Contact';
 import Notification from './components/Notification';
+import Guestbook from './components/Guestbook';
+import Polls from './components/Polls';
+import HireMe from './components/HireMe';
 import "./App.css";
 
 import { initializeApp, getApps } from "firebase/app";
@@ -38,33 +41,39 @@ function App() {
     const connectedRef = ref(db, ".info/connected");
     const counterRef = ref(db, 'online_users');
 
-    // Fungsi Mengirim Data ke Firebase
+    // 1. Fungsi Mengirim Data ke Firebase
     const sendLocationToFirebase = async (lat, lng, city, idType) => {
-      const userId = `${idType}_${Math.random().toString(36).substr(2, 6)}`;
-      const locationRef = ref(db, `online_users_details/${userId}`);
+      try {
+        const userId = `${idType}_${Math.random().toString(36).substr(2, 6)}`;
+        const locationRef = ref(db, `online_users_details/${userId}`);
 
-      await set(locationRef, {
-        city: city || "Unknown Location",
-        lat: Number(lat),
-        lng: Number(lng),
-        timestamp: serverTimestamp()
-      });
+        await set(locationRef, {
+          city: city || "Unknown Location",
+          lat: Number(lat),
+          lng: Number(lng),
+          timestamp: serverTimestamp()
+        });
 
-      onDisconnect(locationRef).remove();
-      sessionStorage.setItem("geo_sent", "true");
+        onDisconnect(locationRef).remove();
+        sessionStorage.setItem("geo_sent", "true");
+      } catch (err) {
+        console.error("Error sending location:", err);
+      }
     };
 
-    // Cadangan: Ambil lokasi via IP jika GPS ditolak
+    // 2. Ambil lokasi via IP (Cadangan)
     const fetchLocationByIP = async () => {
       try {
         const API_KEY = "eb40ea5f56874ee4b2cd557f22a4b601";
         const res = await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${API_KEY}`);
         const data = await res.json();
         sendLocationToFirebase(data.latitude, data.longitude, data.city, "ip");
-      } catch (err) { console.error("IP Geo Error:", err); }
+      } catch (err) {
+        console.error("IP Geo Error:", err);
+      }
     };
 
-    // Logika Utama: Geolocation Akurasi Tinggi
+    // 3. Update User Location (GPS Utama)
     const updateUserLocation = () => {
       if (sessionStorage.getItem("geo_sent")) return;
 
@@ -72,28 +81,29 @@ function App() {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
-
-            // Reverse Geocoding: Mencari nama Kota/Kecamatan asli dari GPS
             let cityName = "Area Terdeteksi";
             try {
-              const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+              // Menggunakan limit 1 agar lebih cepat
+              const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`);
               const data = await res.json();
               cityName = data.address.city || data.address.town || data.address.village || data.address.suburb || "Lokasi Spesifik";
-            } catch (e) { console.error("Reverse Geo Error:", e); }
-
+            } catch (e) {
+              console.error("Reverse Geo Error:", e);
+            }
             sendLocationToFirebase(latitude, longitude, cityName, "gps");
           },
           (error) => {
-            console.warn("Akses GPS ditolak, beralih ke estimasi IP...");
+            console.warn("GPS ditolak, gunakan IP.");
             fetchLocationByIP();
           },
-          { enableHighAccuracy: true, timeout: 8000 }
+          { enableHighAccuracy: false, timeout: 5000 } // Accuracy diturunkan sedikit agar lebih cepat dapet lokasi
         );
       } else {
         fetchLocationByIP();
       }
     };
 
+    // 4. Listen Connection & Visitor Counter
     const unsubscribeConnect = onValue(connectedRef, (snap) => {
       if (snap.val() === true && !hasJoined.current) {
         runTransaction(counterRef, (count) => (count || 0) + 1);
@@ -116,21 +126,30 @@ function App() {
   return (
     <div className="app-layout">
       <Notification />
+      {/* Pastikan Sidebar menerima props dengan benar */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} visitorCount={visitors} />
 
       <div className="main-viewport">
+        {/* Widget Status Online Floating */}
         <div className="live-status-widget">
           <span className="dot-animation"></span>
           <span className="visitor-text">{visitors} Online Now</span>
         </div>
 
-        {activeTab === 'Home' && <MainContent />}
-        {activeTab === 'About' && <AboutSection />}
-        {activeTab === 'Achievements' && <Achievements />}
-        {activeTab === 'Progres' && <GithubProgress />}
-        {activeTab === 'Projects' && <Projects />}
-        {activeTab === 'Chat' && <Chat />}
-        {activeTab === 'Contact' && <Contact />}
+        {/* Render Konten Berdasarkan Tab */}
+        <div className="content-container">
+          {activeTab === 'Home' && <MainContent />}
+          {activeTab === 'About' && <AboutSection />}
+          {activeTab === 'Achievements' && <Achievements />}
+          {activeTab === 'Progres' && <GithubProgress />}
+          {activeTab === 'Projects' && <Projects />}
+          {activeTab === 'Chat' && <Chat />}
+          {activeTab === 'Contact' && <Contact />}
+          {activeTab === 'Guestbook' && <Guestbook />}
+          {activeTab === 'Polls' && <Polls />}
+          {activeTab === 'HireMe' && <HireMe />}
+
+        </div>
       </div>
     </div>
   );
