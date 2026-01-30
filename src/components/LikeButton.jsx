@@ -1,31 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { getDatabase, ref, onValue, runTransaction, increment } from "firebase/database";
-import { getApps, initializeApp } from "firebase/app";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyC4X_F67ci5dG2KAw5VpV2yXwXAJHwnKbU",
-    authDomain: "visitor-counter-web.firebaseapp.com",
-    databaseURL: "https://visitor-counter-web-default-rtdb.asia-southeast1.firebasedatabase.app/",
-    projectId: "visitor-counter-web",
-    storageBucket: "visitor-counter-web.firebasestorage.app",
-    messagingSenderId: "864397864528",
-    appId: "1:864397864528:web:447116cf62d00bfb8beb55",
-};
-
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const db = getDatabase(app);
+import { ref, onValue, runTransaction } from "firebase/database";
+// IMPORT db dari App.jsx (Pastikan path file-nya bener, misal '../App')
+import { db } from "../App"; 
 
 const LikeButton = ({ projectId }) => {
     const [likes, setLikes] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
+        if (!projectId) return;
+
+        // Referensi ke path project_likes di database yang bener
         const likeRef = ref(db, `project_likes/${projectId}`);
 
-        // Cek status like dari localStorage
+        // Cek status like dari localStorage biar user gak like berkali-kali
         const savedLike = localStorage.getItem(`liked_${projectId}`);
         if (savedLike === 'true') setIsLiked(true);
 
+        // Ambil data likes realtime
         const unsubscribe = onValue(likeRef, (snapshot) => {
             setLikes(snapshot.val() || 0);
         });
@@ -34,32 +26,46 @@ const LikeButton = ({ projectId }) => {
     }, [projectId]);
 
     const handleToggleLike = () => {
+        if (!projectId) return;
         const likeRef = ref(db, `project_likes/${projectId}`);
 
         if (!isLiked) {
             // LOGIKA LIKE (+1)
-            runTransaction(likeRef, (currentCount) => (currentCount || 0) + 1);
-            setIsLiked(true);
-            localStorage.setItem(`liked_${projectId}`, 'true');
+            runTransaction(likeRef, (currentCount) => (currentCount || 0) + 1)
+                .then(() => {
+                    setIsLiked(true);
+                    localStorage.setItem(`liked_${projectId}`, 'true');
+                })
+                .catch((err) => console.error("Like Error:", err));
         } else {
             // LOGIKA UNLIKE (-1)
             runTransaction(likeRef, (currentCount) => {
                 if (currentCount && currentCount > 0) return currentCount - 1;
                 return 0;
-            });
-            setIsLiked(false);
-            localStorage.removeItem(`liked_${projectId}`); // Hapus jejak di browser
+            })
+                .then(() => {
+                    setIsLiked(false);
+                    localStorage.removeItem(`liked_${projectId}`);
+                })
+                .catch((err) => console.error("Unlike Error:", err));
         }
     };
 
     return (
         <button
+
             onClick={handleToggleLike}
+
             className={`like-button ${isLiked ? 'active' : ''}`}
+
             title={isLiked ? "Unlike" : "Like"}
+
         >
+
             <span className="heart-icon">{isLiked ? '❤️' : '🤍'}</span>
+
             <span className="like-count">{likes}</span>
+
         </button>
     );
 };

@@ -20,7 +20,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         <aside className="sidebar">
             <div className="profile-section">
                 <div className="profile-img">
-                    {/* Ganti dengan foto aslimu nanti */}
+                    {/* Ganti dengan foto  */}
                     <img src="https://avatars.githubusercontent.com/u/201941138?v=4" alt="Lutfi" />
                 </div>
                 <div className="profile-text">

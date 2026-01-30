@@ -99,7 +99,7 @@ const MainContent = () => {
                     </div>
                 ))}
             </section>
-            <VisitorMap />
+            {/* <VisitorMap /> */}
             {/* <Guestbook /> */}
         </div>
     );

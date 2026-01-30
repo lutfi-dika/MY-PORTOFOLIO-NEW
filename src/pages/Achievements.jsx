@@ -4,9 +4,10 @@ import SertifCyber from '../assets/sertif(1).jpeg';
 import SertifIdn from '../assets/sertif(2).jpeg';
 import SertifPNJ from '../assets/sertif(3).jpeg';
 import LikeButton from '../components/LikeButton';
-import ImageModal from '../components/ImageModal'; // Import Modal
-import { db } from '../App'; // Import db untuk log aktivitas
-import { ref, runTransaction } from "firebase/database";
+import ImageModal from '../components/ImageModal'; 
+// Import db dari App.js yang sudah menggunakan konfigurasi baru
+import { db } from '../App'; 
+import { ref, runTransaction, serverTimestamp, set } from "firebase/database";
 
 const Achievements = () => {
     const [selectedImg, setSelectedImg] = useState(null);
@@ -44,13 +45,25 @@ const Achievements = () => {
         setSelectedImg(item.image);
         setIsModalOpen(true);
 
-        // Kirim sinyal "Sedang melihat" ke Firebase
-        // Gunakan ID provider agar notifikasi muncul di pengunjung lain
+        // --- OPTIMASI LOG AKTIVITAS ---
+        // Kita buat ID unik berdasarkan provider
         const logId = item.provider.toLowerCase().replace(/\s+/g, '_');
         const viewRef = ref(db, `activity_logs/${logId}`);
 
-        runTransaction(viewRef, (currentCount) => {
-            return (currentCount || 0) + 1;
+        // Update jumlah klik/view menggunakan transaction
+        runTransaction(viewRef, (currentData) => {
+            if (currentData === null) {
+                return {
+                    count: 1,
+                    lastViewed: serverTimestamp(),
+                    name: item.provider
+                };
+            }
+            return {
+                ...currentData,
+                count: (currentData.count || 0) + 1,
+                lastViewed: serverTimestamp()
+            };
         });
     };
 
@@ -70,6 +83,7 @@ const Achievements = () => {
 
             <div className="achieve-grid">
                 {data.map((item) => {
+                    // ID unik untuk LikeButton agar tersimpan di node cert_...
                     const firestoreId = `cert_${item.provider.toLowerCase().replace(/\s+/g, '_')}`;
 
                     return (
@@ -82,6 +96,7 @@ const Achievements = () => {
                             <div className="card-info">
                                 <div className="info-top">
                                     <span className="provider-name">{item.provider}</span>
+                                    {/* LikeButton akan otomatis menggunakan DB dari App.js */}
                                     <LikeButton projectId={firestoreId} />
                                 </div>
 

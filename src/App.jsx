@@ -1,47 +1,64 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from './components/Sidebar';
-import MainContent from './pages/MainContent';
-import AboutSection from './pages/AboutSection';
-import Achievements from './pages/Achievements';
-import GithubProgress from './pages/GithubProgress';
-import Projects from './pages/Projects';
-import Chat from './components/PublicChat';
-import Contact from './components/Contact';
-import Notification from './components/Notification';
-import Guestbook from './components/Guestbook';
-import Polls from './components/Polls';
-import HireMe from './components/HireMe';
+import React, { useState, useEffect, useRef } from "react";
+import Sidebar from "./components/Sidebar";
+import MainContent from "./pages/MainContent";
+import AboutSection from "./pages/AboutSection";
+import Achievements from "./pages/Achievements";
+import GithubProgress from "./pages/GithubProgress";
+import Projects from "./pages/Projects";
+import Chat from "./components/PublicChat";
+import Contact from "./components/Contact";
+import Notification from "./components/Notification";
+import Guestbook from "./components/Guestbook";
+import Polls from "./components/Polls";
+import HireMe from "./components/HireMe";
 import "./App.css";
 
-import { initializeApp, getApps } from "firebase/app";
-import { getDatabase, ref, onValue, onDisconnect, runTransaction, increment, set, serverTimestamp } from "firebase/database";
+// Firebase Imports
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  onDisconnect,
+  runTransaction,
+  increment,
+  set,
+  serverTimestamp,
+} from "firebase/database";
 
-// Firebase Config
+// Konfigurasi Firebase (Portofolio-7def4)
 const firebaseConfig = {
-  apiKey: "AIzaSyC4X_F67ci5dG2KAw5VpV2yXwXAJHwnKbU",
-  authDomain: "visitor-counter-web.firebaseapp.com",
-  databaseURL: "https://visitor-counter-web-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "visitor-counter-web",
-  storageBucket: "visitor-counter-web.firebasestorage.app",
-  messagingSenderId: "864397864528",
-  appId: "1:864397864528:web:447116cf62d00bfb8beb55",
-  measurementId: "G-SEMKZNHK7P"
+  apiKey: "AIzaSyCOvc0b1PFjdjRE4PBXaCkTkOBl0K1K0O8",
+  authDomain: "portofolio-7def4.firebaseapp.com",
+  databaseURL: "https://portofolio-7def4-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "portofolio-7def4",
+  storageBucket: "portofolio-7def4.firebasestorage.app",
+  messagingSenderId: "352134782984",
+  appId: "1:352134782984:web:3d174429dd6efa6c1cb1bd",
+  measurementId: "G-7X2Z4WC4NY",
 };
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const db = getDatabase(app);
+// 1. Inisialisasi Firebase & Paksa ke Singapore Instance
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const db = getDatabase(app, "https://portofolio-7def4-default-rtdb.asia-southeast1.firebasedatabase.app");
+const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
+
+// Export db agar komponen lain (Chat, Guestbook) sinkron
 export { db };
 
 function App() {
-  const [activeTab, setActiveTab] = useState('Home');
+  const [activeTab, setActiveTab] = useState("Home");
   const [visitors, setVisitors] = useState(0);
   const hasJoined = useRef(false);
 
   useEffect(() => {
-    const connectedRef = ref(db, ".info/connected");
-    const counterRef = ref(db, 'online_users');
+    console.log("🚀 Firebase System Started...");
 
-    // 1. Fungsi Mengirim Data ke Firebase
+    const connectedRef = ref(db, ".info/connected");
+    const counterRef = ref(db, "online_users");
+
+    // Fungsi Kirim Detail Lokasi & IP
     const sendLocationToFirebase = async (lat, lng, city, idType) => {
       try {
         const userId = `${idType}_${Math.random().toString(36).substr(2, 6)}`;
@@ -49,70 +66,56 @@ function App() {
 
         await set(locationRef, {
           city: city || "Unknown Location",
-          lat: Number(lat),
-          lng: Number(lng),
-          timestamp: serverTimestamp()
+          lat: Number(lat) || 0,
+          lng: Number(lng) || 0,
+          method: idType,
+          timestamp: serverTimestamp(),
         });
 
+        // Hapus data detail otomatis saat user close tab
         onDisconnect(locationRef).remove();
-        sessionStorage.setItem("geo_sent", "true");
+        console.log(`✅ Success: Location via ${idType} sent to DB.`);
       } catch (err) {
-        console.error("Error sending location:", err);
+        console.error("❌ Firebase Set Error:", err);
       }
     };
 
-    // 2. Ambil lokasi via IP (Cadangan)
+    // Ambil Lokasi via API IP (Cadangan & Paling Stabil)
     const fetchLocationByIP = async () => {
+      console.log("📡 Fetching IP Location...");
       try {
-        const API_KEY = "eb40ea5f56874ee4b2cd557f22a4b601";
-        const res = await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${API_KEY}`);
-        const data = await res.json();
-        sendLocationToFirebase(data.latitude, data.longitude, data.city, "ip");
-      } catch (err) {
-        console.error("IP Geo Error:", err);
-      }
-    };
-
-    // 3. Update User Location (GPS Utama)
-    const updateUserLocation = () => {
-      if (sessionStorage.getItem("geo_sent")) return;
-
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords;
-            let cityName = "Area Terdeteksi";
-            try {
-              // Menggunakan limit 1 agar lebih cepat
-              const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`);
-              const data = await res.json();
-              cityName = data.address.city || data.address.town || data.address.village || data.address.suburb || "Lokasi Spesifik";
-            } catch (e) {
-              console.error("Reverse Geo Error:", e);
-            }
-            sendLocationToFirebase(latitude, longitude, cityName, "gps");
-          },
-          (error) => {
-            console.warn("GPS ditolak, gunakan IP.");
-            fetchLocationByIP();
-          },
-          { enableHighAccuracy: false, timeout: 5000 } // Accuracy diturunkan sedikit agar lebih cepat dapet lokasi
+        const res = await fetch(
+          `https://api.ipgeolocation.io/ipgeo?apiKey=eb40ea5f56874ee4b2cd557f22a4b601`
         );
-      } else {
-        fetchLocationByIP();
+        const data = await res.json();
+        if (data.latitude) {
+          sendLocationToFirebase(data.latitude, data.longitude, data.city, "ip");
+        }
+      } catch (err) {
+        console.error("❌ Geo IP API Error:", err);
       }
     };
 
-    // 4. Listen Connection & Visitor Counter
+    // Monitor Koneksi & Transaction Visitor
     const unsubscribeConnect = onValue(connectedRef, (snap) => {
       if (snap.val() === true && !hasJoined.current) {
-        runTransaction(counterRef, (count) => (count || 0) + 1);
+        console.log("🌐 Connected to Firebase Singapore!");
+
+        // Update Online Counter (+1)
+        runTransaction(counterRef, (count) => (count || 0) + 1)
+          .then(() => console.log("📈 Visitor Counter Incremented"))
+          .catch((err) => console.error("❌ Transaction Fail:", err));
+
+        // Auto Decrease Counter (-1) saat offline
         onDisconnect(counterRef).set(increment(-1));
-        updateUserLocation();
+
+        // Pemicu Pengiriman Lokasi
+        fetchLocationByIP();
         hasJoined.current = true;
       }
     });
 
+    // Real-time Listener untuk Update UI Jumlah Visitor
     const unsubscribeCounter = onValue(counterRef, (snapshot) => {
       setVisitors(snapshot.val() || 0);
     });
@@ -126,29 +129,31 @@ function App() {
   return (
     <div className="app-layout">
       <Notification />
-      {/* Pastikan Sidebar menerima props dengan benar */}
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} visitorCount={visitors} />
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        visitorCount={visitors}
+      />
 
       <div className="main-viewport">
-        {/* Widget Status Online Floating */}
+        {/* Widget Online Status */}
         <div className="live-status-widget">
           <span className="dot-animation"></span>
           <span className="visitor-text">{visitors} Online Now</span>
         </div>
 
-        {/* Render Konten Berdasarkan Tab */}
+        {/* Router Sederhana Berdasarkan State */}
         <div className="content-container">
-          {activeTab === 'Home' && <MainContent />}
-          {activeTab === 'About' && <AboutSection />}
-          {activeTab === 'Achievements' && <Achievements />}
-          {activeTab === 'Progres' && <GithubProgress />}
-          {activeTab === 'Projects' && <Projects />}
-          {activeTab === 'Chat' && <Chat />}
-          {activeTab === 'Contact' && <Contact />}
-          {activeTab === 'Guestbook' && <Guestbook />}
-          {activeTab === 'Polls' && <Polls />}
-          {activeTab === 'HireMe' && <HireMe />}
-
+          {activeTab === "Home" && <MainContent />}
+          {activeTab === "About" && <AboutSection />}
+          {activeTab === "Achievements" && <Achievements />}
+          {activeTab === "Progres" && <GithubProgress />}
+          {activeTab === "Projects" && <Projects />}
+          {activeTab === "Chat" && <Chat />}
+          {activeTab === "Contact" && <Contact />}
+          {activeTab === "Guestbook" && <Guestbook />}
+          {activeTab === "Polls" && <Polls />}
+          {activeTab === "HireMe" && <HireMe />}
         </div>
       </div>
     </div>
