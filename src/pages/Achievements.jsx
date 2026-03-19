@@ -3,6 +3,7 @@ import '../styles/Achievements.css';
 import SertifCyber from '../assets/sertif(1).jpeg';
 import SertifIdn from '../assets/sertif(2).jpeg';
 import SertifPNJ from '../assets/sertif(3).jpeg';
+import SertifIcom from '../assets/sertif(4).jpeg';
 import LikeButton from '../components/LikeButton';
 import ImageModal from '../components/ImageModal'; 
 // Import db dari App.js yang sudah menggunakan konfigurasi baru
@@ -37,6 +38,14 @@ const Achievements = () => {
             image: SertifPNJ,
             badge: "ITECHNO CUP 2025",
             color: "#ffcc00"
+        },
+        {
+            id: 4,
+            title: "3rd Place Front Developer ICOM FEAST 2026",
+            provider: "ICOM FEAST 2026",
+            image: SertifIcom,
+            badge: "ICOM FEAST 2026",
+            color: "#e91e63"
         }
     ];
 
